@@ -73,6 +73,9 @@ begin
   DpiX := GetDeviceCaps(Canvas.Handle, LOGPIXELSX);
   DpiY := GetDeviceCaps(Canvas.Handle, LOGPIXELSY);
 
+  DpiX := 150;
+  DpiY := 150;
+
   w := round(Page.Width / 72 * DpiX);
   h := round(Page.Height / 72 * DpiY);
 
