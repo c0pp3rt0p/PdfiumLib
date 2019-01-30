@@ -1,12 +1,9 @@
 {$A8,B-,E-,F-,G+,H+,I+,J-,K-,M-,N-,P+,Q-,R-,S-,T-,U-,V+,X+,Z1}
-{$STRINGCHECKS OFF} // It only slows down Delphi strings, doesn't help C++Builder migration and is finally gone in XE+
 
 // Use DLLs (x64, x86) from https://github.com/pvginkel/PdfiumViewer/tree/master/Libraries/Pdfium
 // PDFium license see https://github.com/pvginkel/PdfiumViewer/tree/master/PDFium%20License
 
 unit PdfiumLib;
-
-{$SCOPEDENUMS ON}
 
 interface
 

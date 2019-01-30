@@ -1,5 +1,4 @@
 {$A8,B-,E-,F-,G+,H+,I+,J-,K-,M-,N-,P+,Q-,R-,S-,T-,U-,V+,X+,Z1}
-{$STRINGCHECKS OFF}
 
 unit PdfiumCtrl;
 
@@ -228,7 +227,7 @@ type
 implementation
 
 uses
-  Math, Clipbrd, Character, PdfiumLib;
+  Math, Clipbrd, PdfiumLib;
 
 const
   cScrollTimerId = 1;
@@ -236,12 +235,17 @@ const
   cScrollTimerInterval = 50;
   cDefaultScrollOffset = 25;
 
-function IsWhitespace(Ch: Char): Boolean;
+  function GetRandomRgn(hdc: HDC; hrgn: HRGN; iNum: Integer): Integer; stdcall;
+    external gdi32;
+const
+  SYSRGN = 4;
+  
+function IsWhitespace(Ch: WideChar): Boolean;
 begin
   {$IF CompilerVersion >= 25.0} // XE4
-  Result := Ch.IsWhiteSpace;
+  Result := false;//Ch.IsWhiteSpace;
   {$ELSE}
-  Result := TCharacter.IsWhiteSpace(Ch);
+  Result := false;//TCharacter.IsWhiteSpace(Ch);
   {$IFEND}
 end;
 
@@ -264,7 +268,7 @@ begin
 
   FDocument := TPdfDocument.Create;
 
-  ParentDoubleBuffered := False;
+  //ParentDoubleBuffered := False;
   ParentBackground := False;
   ParentColor := False;
   TabStop := True;

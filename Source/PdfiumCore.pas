@@ -1,12 +1,11 @@
 {$A8,B-,E-,F-,G+,H+,I+,J-,K-,M-,N-,P+,Q-,R-,S-,T-,U-,V+,X+,Z1}
-{$STRINGCHECKS OFF}
 
 unit PdfiumCore;
 
 interface
 
 uses
-  Windows, Types, SysUtils, Classes, Contnrs, PdfiumLib;
+  Windows, Types, SysUtils, Classes, Contnrs, PdfiumLib, BytesStream;
 
 type
   EPdfException = class(Exception);
@@ -517,7 +516,8 @@ begin
               else
                 NumRead := Size - Offset;
 
-              if not ReadFile(FFileHandle, FBuffer[Offset], NumRead, NumRead, nil) then
+              //if not ReadFile(FFileHandle, FBuffer[Offset], NumRead, NumRead, nil) then
+              if not ReadFile(FFileHandle, (PAnsiChar(FBuffer) + Offset)^, NumRead, NumRead, nil) then
                 RaiseLastOSError;
               Inc(Offset, NumRead);
             end;
@@ -599,7 +599,7 @@ function ReadFromActiveStream(Param: Pointer; Position: LongWord; Buffer: PByte;
 begin
   if Buffer <> nil then
   begin
-    TStream(Param).Seek(Position, TSeekOrigin.soBeginning);
+    TStream(Param).Seek(Position,  soBeginning);
     Result := TStream(Param).Read(Buffer^, Size) = Integer(Size);
   end
   else
@@ -1056,7 +1056,7 @@ begin
     else
       StartIndex := 0;
 
-    FSearchHandle := FPDFText_FindStart(FTextHandle, PChar(SearchString), Flags, StartIndex);
+    FSearchHandle := FPDFText_FindStart(FTextHandle, PWideChar(SearchString), Flags, StartIndex);
   end;
   Result := FSearchHandle <> nil;
 end;
@@ -1151,7 +1151,7 @@ begin
   if (Count > 0) and BeginText then
   begin
     SetLength(Result, Count);
-    Len := FPDFText_GetText(FTextHandle, CharIndex, Count + 1, PChar(Result)); // include #0 terminater
+    Len := FPDFText_GetText(FTextHandle, CharIndex, Count + 1, PWideChar(Result)); // include #0 terminater
     if Len = 0 then
       Result := ''
     else if Len + 1 < Count then
@@ -1170,7 +1170,7 @@ begin
     Len := FPDFText_GetBoundedText(FTextHandle, Left, Top, Right, Bottom, nil, 0); // excluding #0 terminator
     SetLength(Result, Len);
     if Len > 0 then
-      FPDFText_GetBoundedText(FTextHandle, Left, Top, Right, Bottom, PChar(Result), Len);
+      FPDFText_GetBoundedText(FTextHandle, Left, Top, Right, Bottom, PWideChar(Result), Len);
   end
   else
     Result := '';
@@ -1220,7 +1220,7 @@ begin
     if Len > 0 then
     begin
       SetLength(Result, Len);
-      FPDFLink_GetURL(FLinkHandle, LinkIndex, PChar(Result), Len + 1); // including #0 terminator
+      FPDFLink_GetURL(FLinkHandle, LinkIndex, PWideChar(Result), Len + 1); // including #0 terminator
     end;
   end;
 end;
