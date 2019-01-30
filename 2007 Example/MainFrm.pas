@@ -64,7 +64,7 @@ begin
   //Create our masterpiece
   Page := FDocument.Pages[PageIndex];
   OutputDebugString(PChar('We''ve got a page = '));           ;
-  Page.Draw(Image1.Canvas.Handle, 0, 0, Page.Width, 792, prNormal, cPdfControlDefaultDrawOptions);
+  Page.Draw(Image1.Canvas.Handle, 0, 0, round(Page.Width), 792, prNormal, cPdfControlDefaultDrawOptions);
 
 
 
