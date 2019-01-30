@@ -60,11 +60,33 @@ var
   Page: TPdfPage;
   Bitmap: TBitmap;
   PdfBitMap: TPdfBitmap;
+  s: TStream;
+  scale: integer;
+  DpiX, DpiY: Integer;
+  w, h : integer;
 begin
+  scale := 10;
   //Create our masterpiece
   Page := FDocument.Pages[PageIndex];
-  OutputDebugString(PChar('We''ve got a page = '));           ;
-  Page.Draw(Image1.Canvas.Handle, 0, 0, round(Page.Width), 792, prNormal, cPdfControlDefaultDrawOptions);
+  OutputDebugString(PChar('We''ve got a page = '));
+
+  DpiX := GetDeviceCaps(Canvas.Handle, LOGPIXELSX);
+  DpiY := GetDeviceCaps(Canvas.Handle, LOGPIXELSY);
+
+  w := round(Page.Width / 72 * DpiX);
+  h := round(Page.Height / 72 * DpiY);
+
+  Bitmap := TBitmap.Create;
+  s := TFileStream.Create('test.bmp', fmCreate or fmShareDenyNone);
+  try
+    Bitmap.SetSize(w, h);
+    Page.Draw(Bitmap.Canvas.Handle, 0, 0, w, h, prNormal, cPdfControlDefaultDrawOptions);
+
+    Bitmap.SaveToStream(s);
+  finally
+    Bitmap.Free;
+    s.Free;
+  end;
 
 
 
